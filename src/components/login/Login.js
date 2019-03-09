@@ -131,6 +131,8 @@ class Login extends React.Component {
    */
   componentDidMount() {}
 
+
+
   render() {
     return (
       <BaseContainer>
@@ -167,7 +169,7 @@ class Login extends React.Component {
                     this.props.history.push(`/register`)
                   }}
               >
-                to register
+                to register page
               </Button>
             </ButtonContainer>
           </Form>

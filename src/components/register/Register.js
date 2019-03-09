@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { BaseContainer } from "../../helpers/layout";
 import { getDomain } from "../../helpers/getDomain";
 import User from "../shared/models/User";
-import { withRouter } from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import { Button } from "../../views/design/Button";
 
 const FormContainer = styled.div`
@@ -99,7 +99,7 @@ class Register extends React.Component {
                 const user = new User(returnedUser);
                 // store the token into the local storage
                 localStorage.setItem("token", user.token);
-                // user login successfully worked --> navigate to the route /game in the GameRouter
+                // user register successfully worked --> navigate to the /login  in App router
                 this.props.history.push(`/login`);
             })
             .catch(err => {
@@ -157,9 +157,10 @@ class Register extends React.Component {
                                 onClick={() => {
                                     this.register();
                                 }} >register</Button>
-                             /* redirect to the login interface if he or she is a registered user */
-                             <Button disabled = {this.state.username || this.state.password} width = "50%" onClick = {this.props.history.push(`/login`)}>
-                                to login
+
+                             <Button disabled = {this.state.username || this.state.password} width = "50%" onClick = {() => {
+                                 this.props.history.push(`/login`)}}>
+                                to login Page
                              </Button>
                         </ButtonContainer>
                     </Form>
