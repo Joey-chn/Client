@@ -22,15 +22,6 @@ class AppRouter extends React.Component {
       <BrowserRouter>
         <Switch>
           <div>
-          <Route
-              path="/register"
-              exact
-              render={() => (
-                  <RegisterGuard>
-                      <Register />
-                  </RegisterGuard>
-              )}
-          />
             <Route
               path="/game"
               render={() => (
@@ -48,7 +39,13 @@ class AppRouter extends React.Component {
                   </LoginGuard>
               )}
           />
-              <Route path="/" exact render={() => <Redirect to={"/login"} />} />
+          <Route
+              path="/register"
+              render={() => (
+                    <Register />
+              )}
+          />
+          <Route path="/" exact render={() => <Redirect to={"/register"} />} />
           </div>
         </Switch>
       </BrowserRouter>

@@ -147,23 +147,20 @@ class Register extends React.Component {
                         <InputField
                             placeholder="Enter here.."
                             onChange={e => {
-                                this.handleInputChange("name", e.target.value);
+                                this.handleInputChange("password", e.target.value);
                             }}
                         />
                         <ButtonContainer>
                             <Button
-                                disabled={!this.state.username || !this.state.name}
+                                disabled={!this.state.username || !this.state.password}
                                 width="50%"
                                 onClick={() => {
                                     this.register();
-                                }}
-                            >
-                                register
-                            </Button>
-                            /* redirect to the login interface if he or she is a registered user */
-                            <Button width = "50%" onclick = {this.props.history.push(`/login`)}>
+                                }} >register</Button>
+                             /* redirect to the login interface if he or she is a registered user */
+                             <Button disabled = {this.state.username || this.state.password} width = "50%" onClick = {this.props.history.push(`/login`)}>
                                 to login
-                            </Button>
+                             </Button>
                         </ButtonContainer>
                     </Form>
                 </FormContainer>
