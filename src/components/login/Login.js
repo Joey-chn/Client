@@ -75,7 +75,7 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      password: null,
+      name: null,
       username: null
     };
   }
@@ -91,7 +91,7 @@ class Login extends React.Component {
       },
       body: JSON.stringify({
         username: this.state.username,
-        password: this.state.password
+        name: this.state.name
       })
     })
       .then(response => response.json())
@@ -131,8 +131,6 @@ class Login extends React.Component {
    */
   componentDidMount() {}
 
-
-
   render() {
     return (
       <BaseContainer>
@@ -145,16 +143,16 @@ class Login extends React.Component {
                 this.handleInputChange("username", e.target.value);
               }}
             />
-            <Label>Password</Label>
+            <Label>Name</Label>
             <InputField
               placeholder="Enter here.."
               onChange={e => {
-                this.handleInputChange("password", e.target.value);
+                this.handleInputChange("name", e.target.value);
               }}
             />
             <ButtonContainer>
               <Button
-                disabled={!this.state.username || !this.state.password}
+                disabled={!this.state.username || !this.state.name}
                 width="50%"
                 onClick={() => {
                   this.login();
@@ -163,7 +161,7 @@ class Login extends React.Component {
                 Login
               </Button>
               <Button
-                  disabled={this.state.username || this.state.password}
+                  disabled={this.state.username || this.state.name}
                   width="50%"
                   onClick={() => {
                     this.props.history.push(`/register`)

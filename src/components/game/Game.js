@@ -51,7 +51,7 @@ class Game extends React.Component {
         // feel free to remove it :)
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        this.setState({ users });
+        this.setState({ users: users });
       })
       .catch(err => {
         console.log(err);

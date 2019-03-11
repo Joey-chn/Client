@@ -5,6 +5,8 @@ import { getDomain } from "../../helpers/getDomain";
 import User from "../shared/models/User";
 import {Redirect, withRouter} from "react-router-dom";
 import { Button } from "../../views/design/Button";
+import isValid_register from "../../helpers/isValid_register";
+
 
 const FormContainer = styled.div`
   margin-top: 2em;
@@ -75,8 +77,9 @@ class Register extends React.Component {
     constructor() {
         super();
         this.state = {
-            password: null,
-            username: null
+            name: null,
+            username: null,
+            // creationDate: null
         };
     }
     /**
@@ -84,31 +87,42 @@ class Register extends React.Component {
      * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
      */
     register() {
-        fetch(`${getDomain()}/users`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password
+        //  test if the username is existed
+        if (!isValid_register(this.state.username)) {
+            alert("The username is taken!");
+        } else {
+            // this.setState({creationDate: new Date().toDateString()});
+            fetch(`${getDomain()}/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: this.state.username,
+                    name: this.state.name,
+                    creationDate: this.state.creationDate
+                })
             })
-        })
-            .then(response => response.json())
-            .then(returnedUser => {
-                const user = new User(returnedUser);
-                // store the token into the local storage
-                localStorage.setItem("token", user.token);
-                // user register successfully worked --> navigate to the /login  in App router
-                this.props.history.push(`/login`);
-            })
-            .catch(err => {
-                if (err.message.match(/Failed to fetch/)) {
-                    alert("The server cannot be reached. Did you start it?");
-                } else {
-                    alert(`Something went wrong during the login: ${err.message}`);
-                }
-            });
+                .then(response => response.json())
+                .then(returnedUser => {
+
+                        const user = new User(returnedUser);
+                        // store the token into the local storage
+                        localStorage.setItem("token", user.token);
+                        // user register successfully worked --> navigate to the /login  in App router
+                        this.props.history.push(`/login`);
+
+
+                })
+                .catch(err => {
+                    if (err.message.match(/Failed to fetch/)) {
+                        alert("The server cannot be reached. Did you start it?");
+                    } else {
+                        alert(`Something went wrong during the login: ${err.message}`);
+                    }
+                });
+
+        }
     }
 
     /**
@@ -143,22 +157,22 @@ class Register extends React.Component {
                                 this.handleInputChange("username", e.target.value);
                             }}
                         />
-                        <Label>Password</Label>
+                        <Label>name</Label>
                         <InputField
                             placeholder="Enter here.."
                             onChange={e => {
-                                this.handleInputChange("password", e.target.value);
+                                this.handleInputChange("name", e.target.value);
                             }}
                         />
                         <ButtonContainer>
                             <Button
-                                disabled={!this.state.username || !this.state.password}
+                                disabled={!this.state.username || !this.state.name}
                                 width="50%"
                                 onClick={() => {
                                     this.register();
                                 }} >register</Button>
 
-                             <Button disabled = {this.state.username || this.state.password} width = "50%" onClick = {() => {
+                             <Button disabled = {this.state.username || this.state.name} width = "50%" onClick = {() => {
                                  this.props.history.push(`/login`)}}>
                                 to login Page
                              </Button>

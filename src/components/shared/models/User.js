@@ -10,6 +10,7 @@ class User {
     this.status = null;
     this.games = null;
     this.moves = null;
+    this.creatationDate = null;
     Object.assign(this, data);
   }
 }
