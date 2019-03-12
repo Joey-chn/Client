@@ -71,13 +71,13 @@ class Register extends React.Component {
     /**
      * If you don’t initialize the state and you don’t bind methods, you don’t need to implement a constructor for your React component.
      * The constructor for a React component is called before it is mounted (rendered).
-     * In this case the initial state is defined in the constructor. The state is a JS object containing two fields: name and username
+     * In this case the initial state is defined in the constructor. The state is a JS object containing two fields: password and username
      * These fields are then handled in the onChange() methods in the resp. InputFields
      */
     constructor() {
         super();
         this.state = {
-            name: null,
+            password: null,
             username: null,
             // creationDate: null
         };
@@ -87,43 +87,39 @@ class Register extends React.Component {
      * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
      */
     register() {
-        //  test if the username is existed
-        if (!isValid_register(this.state.username)) {
-            alert("The username is taken!");
-        } else {
+
             // this.setState({creationDate: new Date().toDateString()});
             fetch(`${getDomain()}/users`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "requestType": 'register'
                 },
                 body: JSON.stringify({
                     username: this.state.username,
-                    name: this.state.name,
-                    creationDate: this.state.creationDate
+                    password: this.state.password,
                 })
             })
-                .then(response => response.json())
+                .then(response => {if (response.status === 409)
+                            throw new Error("The username is already taken:)");
+                            return response.json();})
                 .then(returnedUser => {
-
-                        const user = new User(returnedUser);
-                        // store the token into the local storage
-                        localStorage.setItem("token", user.token);
-                        // user register successfully worked --> navigate to the /login  in App router
-                        this.props.history.push(`/login`);
-
-
+                            // const user = new User(returnedUser);
+                            // store the token into the local storage
+                            // localStorage.setItem("token", user.token);
+                            // user register successfully worked --> navigate to the /login  in App router
+                            this.props.history.push(`/login`);
                 })
                 .catch(err => {
                     if (err.message.match(/Failed to fetch/)) {
                         alert("The server cannot be reached. Did you start it?");
-                    } else {
-                        alert(`Something went wrong during the login: ${err.message}`);
+                    } else{
+                        alert(`${err.message}`);
                     }
                 });
 
         }
-    }
+
 
     /**
      *  Every time the user enters something in the input field, the state gets updated.
@@ -157,23 +153,26 @@ class Register extends React.Component {
                                 this.handleInputChange("username", e.target.value);
                             }}
                         />
-                        <Label>name</Label>
+                        <Label>password</Label>
                         <InputField
+                            type = "password"
                             placeholder="Enter here.."
                             onChange={e => {
-                                this.handleInputChange("name", e.target.value);
+                                this.handleInputChange("password", e.target.value);
                             }}
                         />
                         <ButtonContainer>
                             <Button
-                                disabled={!this.state.username || !this.state.name}
+                                // disabled={!this.state.username || !this.state.password}
                                 width="50%"
                                 onClick={() => {
                                     this.register();
                                 }} >register</Button>
 
-                             <Button disabled = {this.state.username || this.state.name} width = "50%" onClick = {() => {
-                                 this.props.history.push(`/login`)}}>
+                             <Button
+                                 // disabled = {this.state.username || this.state.password}
+                                 width = "50%"
+                                 onClick = {() => {this.props.history.push(`/login`)}}>
                                 to login Page
                              </Button>
                         </ButtonContainer>

@@ -69,13 +69,13 @@ class Login extends React.Component {
   /**
    * If you don’t initialize the state and you don’t bind methods, you don’t need to implement a constructor for your React component.
    * The constructor for a React component is called before it is mounted (rendered).
-   * In this case the initial state is defined in the constructor. The state is a JS object containing two fields: name and username
+   * In this case the initial state is defined in the constructor. The state is a JS object containing two fields: password and username
    * These fields are then handled in the onChange() methods in the resp. InputFields
    */
   constructor() {
     super();
     this.state = {
-      name: null,
+      password: null,
       username: null
     };
   }
@@ -84,24 +84,33 @@ class Login extends React.Component {
    * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
    */
   login() {
+
     fetch(`${getDomain()}/users`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "requestType": "login"
       },
       body: JSON.stringify({
         username: this.state.username,
-        name: this.state.name
+        password: this.state.password
       })
     })
-      .then(response => response.json())
+      .then(response =>
+
+          {if (response.status === 401) {
+            throw new Error("Incorrect password!");
+          }else if (response.status === 404) {
+              throw new Error("Username not found!");
+          }
+          return response.json();})
       .then(returnedUser => {
-        const user = new User(returnedUser);
-        // store the token into the local storage
-        localStorage.setItem("token", user.token);
-        // user login successfully worked --> navigate to the route /game in the GameRouter
-        this.props.history.push(`/game`);
-      })
+          const user = new User(returnedUser);
+          // store the token into the local storage
+          localStorage.setItem("token", user.token);
+          this.props.history.push(`/game`);
+        }
+      )
       .catch(err => {
         if (err.message.match(/Failed to fetch/)) {
           alert("The server cannot be reached. Did you start it?");
@@ -143,16 +152,17 @@ class Login extends React.Component {
                 this.handleInputChange("username", e.target.value);
               }}
             />
-            <Label>Name</Label>
+            <Label>password</Label>
             <InputField
+              type = "password"
               placeholder="Enter here.."
               onChange={e => {
-                this.handleInputChange("name", e.target.value);
+                this.handleInputChange("password", e.target.value);
               }}
             />
             <ButtonContainer>
               <Button
-                disabled={!this.state.username || !this.state.name}
+                // disabled={!this.state.username || !this.state.password}
                 width="50%"
                 onClick={() => {
                   this.login();
@@ -161,7 +171,7 @@ class Login extends React.Component {
                 Login
               </Button>
               <Button
-                  disabled={this.state.username || this.state.name}
+                  // disabled={this.state.username || this.state.password}
                   width="50%"
                   onClick={() => {
                     this.props.history.push(`/register`)
