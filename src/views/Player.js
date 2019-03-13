@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import {Redirect, withRouter} from "react-router-dom";
+import {Button} from "./design/Button";
 
 const Container = styled.div`
   margin: 6px 0;
@@ -11,7 +13,7 @@ const Container = styled.div`
   border: 1px solid #ffffff26;
 `;
 
-const UserName = styled.div`
+const Username = styled.div`
   font-weight: lighter;
   margin-left: 5px;
 `;
@@ -38,10 +40,11 @@ const Id = styled.div`
 const Player = ({ user }) => {
   return (
     <Container>
-      <Name>{user.name}</Name> <UserName>{user.username}</UserName>
+      <Name>{(user.name) ? user.name: "NO NAME"}</Name>
+        <Username>{user.username}</Username>
       <Id>Id: {user.id}</Id>
     </Container>
   );
 };
 
-export default Player;
+export default withRouter(Player);

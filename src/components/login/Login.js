@@ -115,7 +115,7 @@ class Login extends React.Component {
         if (err.message.match(/Failed to fetch/)) {
           alert("The server cannot be reached. Did you start it?");
         } else {
-          alert(`Something went wrong during the login: ${err.message}`);
+          alert(`${err.message}`);
         }
       });
   }

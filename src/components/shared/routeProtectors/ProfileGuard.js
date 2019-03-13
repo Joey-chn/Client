@@ -5,11 +5,12 @@ import { Redirect } from "react-router-dom";
  *
  * Another way to export directly your functional component.
  */
-export const RegisterGuard = props => {
+export const ProfileGuard = props => {
 
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem("token_other") === localStorage.getItem("token")) {
         return props.children;
     }
+
     // if user is already logged in, redirects to the main /app
     return <Redirect to={"/login"} />;
 };

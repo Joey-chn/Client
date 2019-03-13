@@ -5,15 +5,13 @@ import { getDomain } from "../../helpers/getDomain";
 import User from "../shared/models/User";
 import {Redirect, withRouter} from "react-router-dom";
 import { Button } from "../../views/design/Button";
-import isValid_register from "../../helpers/isValid_register";
-
 
 const FormContainer = styled.div`
-  margin-top: 2em;
+  margin-top: 3em;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 300px;
+  min-height: 350px;
   justify-content: center;
 `;
 
@@ -22,7 +20,7 @@ const Form = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 60%;
-  height: 375px;
+  height: 450px;
   font-size: 16px;
   font-weight: 300;
   padding-left: 37px;
@@ -32,11 +30,12 @@ const Form = styled.div`
   transition: opacity 0.5s ease, transform 0.5s ease;
 `;
 
-const InputField = styled.input`
+const InputField = styled.div`
   &::placeholder {
     color: rgba(255, 255, 255, 0.2);
   }
   height: 35px;
+  justify-content: center;
   padding-left: 15px;
   margin-left: -4px;
   border: none;
@@ -67,69 +66,40 @@ const ButtonContainer = styled.div`
  * https://reactjs.org/docs/react-component.html
  * @Class
  */
-class Register extends React.Component {
+class ProfileView extends React.Component {
     /**
      * If you don’t initialize the state and you don’t bind methods, you don’t need to implement a constructor for your React component.
      * The constructor for a React component is called before it is mounted (rendered).
      * In this case the initial state is defined in the constructor. The state is a JS object containing two fields: password and username
      * These fields are then handled in the onChange() methods in the resp. InputFields
      */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            password: null,
             username: null,
-            // creationDate: null
+            name: null,
+            birthday: null,
+            creationDate: null
         };
     }
+
+
     /**
      * HTTP POST request is sent to the backend.
      * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
      */
-    register() {
-
-            // this.setState({creationDate: new Date().toDateString()});
-            fetch(`${getDomain()}/users`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "requestType": 'register'
-                },
-                body: JSON.stringify({
-                    username: this.state.username,
-                    password: this.state.password
-                })
-            })
-                .then(response => {if (response.status === 409)
-                            throw new Error("The username is already taken:)");
-                            return response.json();})
-                .then(returnedUser => {
-                            // const user = new User(returnedUser);
-                            // store the token into the local storage
-                            // localStorage.setItem("token", user.token);
-                            // user register successfully worked --> navigate to the /login  in App router
-                            this.props.history.push(`/login`);
-                })
-                .catch(err => {
-                    if (err.message.match(/Failed to fetch/)) {
-                        alert("The server cannot be reached. Did you start it?");
-                    } else{
-                        alert(`${err.message}`);
-                    }
-                });
-        }
-
+    componentDidMount() {
+        // console.log(this.props.user)
+        // console.log(localStorage.getItem("username"));
+        this.setState({username: localStorage.getItem("username"),
+            name: localStorage.getItem("name"),
+            birthday: localStorage.getItem("birthday"),
+            creationDate: localStorage.getItem("creationDate")
+        });
+    }
 
     /**
-     *  Every time the user enters something in the input field, the state gets updated.
-     * @param key (the key of the state for identifying the field that needs to be updated)
-     * @param value (the value that gets assigned to the identified state key)
-     */
-    handleInputChange(key, value) {
-        // Example: if the key is username, this statement is the equivalent to the following one:
-        // this.setState({'username': value});
-        this.setState({ [key]: value });
-    }
+
 
     /**
      * componentDidMount() is invoked immediately after a component is mounted (inserted into the tree).
@@ -138,42 +108,44 @@ class Register extends React.Component {
      * You may call setState() immediately in componentDidMount().
      * It will trigger an extra rendering, but it will happen before the browser updates the screen.
      */
-    componentDidMount() {}
+    //  to fetch the data from the server, and display it on the screen
 
     render() {
         return (
+
             <BaseContainer>
                 <FormContainer>
                     <Form>
-                        <Label>Username</Label>
-                        <InputField
-                            placeholder="Enter here.."
-                            onChange={e => {
-                                this.handleInputChange("username", e.target.value);
-                            }}
-                        />
-                        <Label>password</Label>
-                        <InputField
-                            type = "password"
-                            placeholder="Enter here.."
-                            onChange={e => {
-                                this.handleInputChange("password", e.target.value);
-                            }}
-                        />
+                        <Label>username</Label>
+                        <InputField >{this.state.username}</InputField >
+
+                        <Label>name</Label>
+                        <InputField  >{this.state.name}</InputField >
+
+                        <Label>birthday</Label>
+                        <InputField  type = "date">{this.state.birthday}</InputField >
+
+                        <Label>creation date</Label>
+                        <InputField  type = "date">{this.state.creationDate}</InputField >
+
                         <ButtonContainer>
                             <Button
-                                // disabled={!this.state.username || !this.state.password}
+                                disabled = {localStorage.getItem("token_other") != localStorage.getItem("token") }
                                 width="50%"
                                 onClick={() => {
-                                    this.register();
-                                }} >register</Button>
-
-                             <Button
-                                 // disabled = {this.state.username || this.state.password}
-                                 width = "50%"
-                                 onClick = {() => {this.props.history.push(`/login`)}}>
-                                to login Page
-                             </Button>
+                                    this.props.history.push('/game/dashboard/profileEdit')
+                                }}
+                            >
+                                edit
+                            </Button>
+                            <Button
+                                width="50%"
+                                onClick={() => {
+                                    this.props.history.push('/game')
+                                }}
+                            >
+                                to game page
+                            </Button>
                         </ButtonContainer>
                     </Form>
                 </FormContainer>
@@ -186,4 +158,4 @@ class Register extends React.Component {
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
  */
-export default withRouter(Register);
+export default withRouter(ProfileView);

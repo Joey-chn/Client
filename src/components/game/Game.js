@@ -5,7 +5,9 @@ import { getDomain } from "../../helpers/getDomain";
 import Player from "../../views/Player";
 import { Spinner } from "../../views/design/Spinner";
 import { Button } from "../../views/design/Button";
-import { withRouter } from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
+import ProfileView from "../profileView/ProfileView";
+import User from "../shared/models/User";
 
 const Container = styled(BaseContainer)`
   color: white;
@@ -59,6 +61,25 @@ class Game extends React.Component {
       });
   }
 
+
+  // when the user click on the user name
+   handleProfileView(user_info) {
+      // console.log(user_info)
+      this.props.history.push("/game/dashboard/profileView" );
+      localStorage.setItem("username", user_info.username);
+      localStorage.setItem("name", user_info.name);
+      localStorage.setItem("birthday", user_info.birthday);
+      localStorage.setItem("creationDate", user_info.creationDate);
+      localStorage.setItem("id", user_info.id);
+
+      //  use this to tell if the user is authorized to edit the profile
+     localStorage.setItem("token_other", user_info.token);
+
+
+
+      // return  <ProfileView user = {user_info}/>
+  }
+
   render() {
     return (
       <Container>
@@ -71,8 +92,10 @@ class Game extends React.Component {
             <Users>
               {this.state.users.map(user => {
                 return (
-                  <PlayerContainer key={user.id}>
-                    <Player user={user} />
+                    //  when click, pass the userId to the handlechange function
+                  <PlayerContainer key={user.id} onClick = {() => {const user_info = new User(user);this.handleProfileView(user_info)}}>
+
+                    <Player  user={user}/>
                   </PlayerContainer>
                 );
               })}
