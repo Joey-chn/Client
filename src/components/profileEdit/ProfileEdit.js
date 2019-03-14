@@ -20,7 +20,7 @@ const Form = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 60%;
-  height: 450px;
+  height: 550px;
   font-size: 16px;
   font-weight: 300;
   padding-left: 37px;
@@ -37,6 +37,7 @@ const InputField = styled.input`
   }
   height: 35px;
   padding-left: 15px;
+  padding-top: 6px;
   margin-left: -4px;
   border: none;
   border-radius: 20px;
@@ -51,6 +52,7 @@ const DisplayField = styled.div`
   }
   height: 35px;
   padding-left: 15px;
+  padding-top: 6px;
   margin-left: -4px;
   border: none;
   border-radius: 20px;
@@ -130,12 +132,9 @@ class ProfileEdit extends React.Component {
              })
                  .then(response => {
 
-                         // if (response.status === 401) {
-                         //     throw new Error("Incorrect password!");
-                         // }else if (response.status === 404) {
-                         //     throw new Error("Username not found!");
-                         // }
-                        //  no.json()
+                         if (response.status === 409) {
+                             throw new Error("Username is taken!");
+                         }
                          return response;
                      }
                  )
@@ -148,7 +147,7 @@ class ProfileEdit extends React.Component {
                      if (err.message.match(/Failed to fetch/)) {
                          alert("The server cannot be reached. Did you start it?");
                      } else {
-                         alert(`Something went wrong during the login: ${err.message}`);
+                         alert(`${err.message}`);
                      }
                  });
          }else{
