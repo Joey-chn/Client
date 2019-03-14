@@ -94,7 +94,9 @@ class ProfileEdit extends React.Component {
             name: localStorage.getItem("name"),
             birthday: localStorage.getItem("birthday"),
             creationDate: localStorage.getItem("creationDate"),
-
+            status: localStorage.getItem('token') === localStorage.getItem('token_other') ? 'online':'offline',
+            userId: localStorage.getItem('id'),
+            //  state value for change
             usernameChange :false,
             nameChange: false,
             birthdayChange: false
@@ -107,19 +109,23 @@ class ProfileEdit extends React.Component {
      * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
      */
     edit() {
-
+        // console.log(this.state.nameChange)
         // test if there're some changes in the fields
          if (this.state.usernameChange || this.state.birthdayChange || this.state.nameChange) {
-             fetch(`${getDomain()}/users`, {
+             const id = this.state.userId
+             console.log(this.state.nameChange)
+             fetch(`${getDomain()}/users/${id}`, {
                  method: "PUT",
                  headers: {
-                     "Content-Type": "application/json"
+                     "Content-Type": "application/json",
+                     // "requestType": "update"
                  },
                  body: JSON.stringify({
-                     username: this.state.usernameChange ? this.state.username : false,
-                     name: this.state.nameChange ? this.state.name : false,
-                     birthday: this.state.birthday ? this.state.birthday : false,
-                     id: localStorage.getItem("id")
+                     username: this.state.username, //() =>  (this.state.usernameChange? this.state.username : "false"),
+                     name: this.state.name,//()=> this.state.nameChange ? this.state.name : "false",
+                     birthday: this.state.birthday //() => this.state.birthdayChange ? this.state.birthday : "false",
+                     // id: parseInt(localStorage.getItem("id"))
+
                  })
              })
                  .then(response => {
@@ -129,7 +135,8 @@ class ProfileEdit extends React.Component {
                          // }else if (response.status === 404) {
                          //     throw new Error("Username not found!");
                          // }
-                         return response.json();
+                        //  no.json()
+                         return response;
                      }
                  )
                  .then(returnedUser => {
@@ -183,16 +190,21 @@ class ProfileEdit extends React.Component {
                             onChange={e => {
                                 this.handleInputChange("username", e.target.value);
                                 localStorage.setItem("username",e.target.value);
-                                this.handleInputChange(this.state.usernameChange, true)
+                                this.handleInputChange('usernameChange', true)
                             }}
                         />
+
+                        <Label>status</Label>
+                        <DisplayField
+                        >{this.state.status}</DisplayField>
+
                         <Label>name</Label>
                         <InputField
                             placeholder={this.state.name}
                             onChange={e => {
                                 this.handleInputChange("name", e.target.value);
                                 localStorage.setItem("name",e.target.value);
-                                this.handleInputChange(this.state.nameChange, true)
+                                this.handleInputChange('nameChange', true)
                             }}
                         />
                         <Label>birthday</Label>
@@ -202,7 +214,7 @@ class ProfileEdit extends React.Component {
                             onChange={e => {
                                 this.handleInputChange("birthday", e.target.value);
                                 localStorage.setItem("birthday",e.target.value);
-                                this.handleInputChange(this.state.birthday, true)
+                                this.handleInputChange('birthdayChange', true)
                             }}
                         />
 

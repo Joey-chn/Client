@@ -79,7 +79,8 @@ class ProfileView extends React.Component {
             username: null,
             name: null,
             birthday: null,
-            creationDate: null
+            creationDate: null,
+            status: null
         };
     }
 
@@ -94,7 +95,8 @@ class ProfileView extends React.Component {
         this.setState({username: localStorage.getItem("username"),
             name: localStorage.getItem("name"),
             birthday: localStorage.getItem("birthday"),
-            creationDate: localStorage.getItem("creationDate")
+            creationDate: localStorage.getItem("creationDate"),
+            status: localStorage.getItem('token') === localStorage.getItem('token_other') ? 'online':'offline'
         });
     }
 
@@ -118,6 +120,9 @@ class ProfileView extends React.Component {
                     <Form>
                         <Label>username</Label>
                         <InputField >{this.state.username}</InputField >
+
+                        <Label>status</Label>
+                        <InputField  >{this.state.status}</InputField >
 
                         <Label>name</Label>
                         <InputField  >{this.state.name}</InputField >

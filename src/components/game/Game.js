@@ -73,7 +73,7 @@ class Game extends React.Component {
       localStorage.setItem("id", user_info.id);
 
       //  use this to tell if the user is authorized to edit the profile
-     localStorage.setItem("token_other", user_info.token);
+    localStorage.setItem("token_other", user_info.token);
 
 
 
